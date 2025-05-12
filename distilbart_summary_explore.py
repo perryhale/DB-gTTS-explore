@@ -5,7 +5,6 @@ import time
 import fitz # PyMuPDF
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-from tqdm import tqdm
 
 
 ### setup
@@ -16,12 +15,12 @@ print(f"[Elapsed time: {time.time()-T0:.3f}s]")
 
 # hyperparameters
 MODEL = 'sshleifer/distilbart-cnn-12-6'
-MAX_TOKENS = 1024
-BATCH_SIZE = 1
-SUMMARY_DEPTH = 2
-SUMMARY_MAX = 512
-SUMMARY_MIN = 32
-OUTPUT_ROOT = '.'
+MAX_TOKENS = 1024 # model dependent
+BATCH_SIZE = 1 # hardware dependent
+SUMMARY_DEPTH = 2 # use dependent
+SUMMARY_MAX = 512 # use dependent
+SUMMARY_MIN = 32 # use dependent
+OUTPUT_ROOT = '.' # untested
 
 
 ### functions
@@ -38,7 +37,7 @@ def extract_txt_from_pdf(pdf_path):
 # type: (str, AutoTokenizer, int) -> list[str]
 def split_txt(text, tokenizer, max_tokens=MAX_TOKENS):
 	
-	# tokenize, slice by max_tokens, de-tokenize
+	# tokenize, slice by max_tokens, detokenize
 	input_ids = tokenizer(text, return_tensors='pt', truncation=False)['input_ids'][0]
 	text_chunks = [input_ids[i:i+max_tokens] for i in range(0, len(input_ids), max_tokens)]
 	text_chunks = [tokenizer.decode(chunk_ids, skip_special_tokens=True) for chunk_ids in text_chunks]

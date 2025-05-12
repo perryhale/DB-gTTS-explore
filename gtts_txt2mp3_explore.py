@@ -1,11 +1,8 @@
 import os
 import sys
-import glob
 import time
-import fitz # PyMuPDF
-import torch
+import glob
 from gtts import gTTS
-from tqdm import tqdm
 
 
 ### setup
@@ -25,12 +22,14 @@ def gtts_txt_to_mp3(text, filename="output.mp3", lang='en'):
 	tts = gTTS(text=text, lang=lang)
 	tts.save(filename)
 
-# type: (str) -> None
-def txt2mp3(path):
+# type: (str, str) -> None
+def txt2mp3(path, output_root=OUTPUT_ROOT):
 	with open(path, 'r') as f:
 		print(f"Process: \"{path}\"")
-		gtts_txt_to_mp3(f.read(), filename=path+'.mp3')
-		print(f"Saved to: \"{filename}\"\a")
+		out_path = os.path.join(output_root, f'{path}.mp3')
+		gtts_txt_to_mp3(f.read(), filename=out_path)
+		print(f"Saved to: \"{out_path}\"\a")
+		print(f"[Elapsed time: {time.time()-T0:.3f}s]")
 
 # type: (str, str) -> None
 def txt2mp3_explore_directory(directory, pattern):
